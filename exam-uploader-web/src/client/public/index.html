@@ -1,13 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Uploader</title>
+    <title>QuizZiz - Hệ thống Upload Đề Thi</title>
+    <meta name="description" content="Hệ thống upload và quản lý đề thi trực tuyến">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Initial loading styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        /* Hide loading screen when app loads */
+        .app-loaded .loading-screen {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Đang tải QuizZiz...</div>
+        </div>
+    </div>
+
+    <!-- App Container -->
     <div id="root"></div>
-    <script src="bundle.js"></script>
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            padding: 20px;
+        ">
+            <div>
+                <h2 style="color: #333; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ffa502; margin-right: 10px;"></i>
+                    JavaScript Required
+                </h2>
+                <p style="color: #666; font-size: 1.1rem; margin-bottom: 20px;">
+                    QuizZiz cần JavaScript để hoạt động. Vui lòng bật JavaScript trong trình duyệt của bạn.
+                </p>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 4px solid #2196f3;">
+                    <h3 style="color: #1976d2; margin-bottom: 10px;">Hướng dẫn bật JavaScript:</h3>
+                    <ul style="text-align: left; color: #555;">
+                        <li>Chrome: Settings → Privacy and Security → Site Settings → JavaScript</li>
+                        <li>Firefox: about:config → javascript.enabled → true</li>
+                        <li>Safari: Preferences → Security → Enable JavaScript</li>
+                        <li>Edge: Settings → Site permissions → JavaScript</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </noscript>
+
+    <!-- Error Boundary Fallback -->
+    <div id="error-fallback" style="display: none;">
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            padding: 20px;
+        ">
+            <div>
+                <h2 style="color: #e74c3c; margin-bottom: 20px;">
+                    <i class="fas fa-bug" style="margin-right: 10px;"></i>
+                    Có lỗi xảy ra
+                </h2>
+                <p style="color: #666; margin-bottom: 20px;">Ứng dụng gặp lỗi không mong muốn. Vui lòng tải lại trang.</p>
+                <button onclick="window.location.reload()" style="
+                    background: #3498db;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                ">
+                    <i class="fas fa-refresh" style="margin-right: 8px;"></i>
+                    Tải lại trang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Hide loading screen when app loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.body.classList.add('app-loaded');
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            document.getElementById('error-fallback').style.display = 'block';
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            document.getElementById('error-fallback').style.display = 'block';
+        });
+
+        // Service Worker registration (for PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            if (window.performance && window.performance.timing) {
+                const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+                console.log('Page load time:', loadTime + 'ms');
+            }
+        });
+
+        // Theme detection
+        function setTheme() {
+            const savedTheme = localStorage.getItem('quiz-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+        setTheme();
+
+        // Update theme when system preference changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('quiz-theme')) {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+    </script>
+
+    <!-- Main bundle - will be injected by build tool -->
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

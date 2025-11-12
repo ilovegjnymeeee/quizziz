@@ -1,0 +1,43 @@
+{
+  "name": "exam-uploader-web",
+  "version": "1.0.0",
+  "description": "A web application for uploading and managing exam questions.",
+  "main": "src/server/src/index.ts",
+  "scripts": {
+    "start": "node src/server/src/index.ts",
+    "client": "npm start --prefix src/client",
+    "server": "ts-node src/server/src/index.ts",
+    "build": "npm run build --prefix src/client",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.2",
+    "ts-node": "^9.1.1",
+    "jest": "^26.6.3",
+    "babel-jest": "^26.6.3",
+    "babel-preset-typescript": "^7.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/exam-uploader-web.git"
+  },
+  "keywords": [
+    "exam",
+    "upload",
+    "questions",
+    "web",
+    "application"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/exam-uploader-web/issues"
+  },
+  "homepage": "https://github.com/yourusername/exam-uploader-web#readme"
+}
